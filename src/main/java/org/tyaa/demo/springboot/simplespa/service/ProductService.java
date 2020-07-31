@@ -66,6 +66,7 @@ public class ProductService {
                     .price(productModel.getPrice())
                     .quantity(productModel.getQuantity())
                     .category(categoryOptional.get())
+                    .image(productModel.getImage())
                     .build();
             productDao.save(category);
             // Demo Logging
@@ -138,8 +139,9 @@ public class ProductService {
     // поиск отфильтрованного и отсортированного списка товаров
     // на основе запросов query dsl
     public ResponseModel search(ProductSearchModel searchModel) {
-        ProductPredicatesBuilder builder = new ProductPredicatesBuilder();
+        List<Product> products = null;
         if (searchModel.searchString != null && !searchModel.searchString.isEmpty()) {
+            ProductPredicatesBuilder builder = new ProductPredicatesBuilder();
             // разбиение значения http-параметра search
             // на отдельные выражения условий фильтрации
             Pattern pattern = Pattern.compile("([\\w]+?)(:|<|>)([\\w\\]\\[\\,]+?);");
@@ -147,19 +149,27 @@ public class ProductService {
             while (matcher.find()) {
                 builder.with(matcher.group(1), matcher.group(2), matcher.group(3));
             }
+            BooleanExpression expression = builder.build();
+            // выполнение sql-запроса к БД
+            // с набором условий фильтрации
+            // и с указанием имени поля и направления сортировки
+            products =
+                (List<Product>) productDao.findAll(
+                    expression,
+                    Sort.by(
+                        searchModel.sortingDirection,
+                        searchModel.orderBy
+                    )
+                );
+        } else {
+            products =
+                productDao.findAll(
+                    Sort.by(
+                        searchModel.sortingDirection,
+                        searchModel.orderBy
+                    )
+                );
         }
-        BooleanExpression expression = builder.build();
-        // выполнение sql-запроса к БД
-        // с набором условий фильтрации
-        // и с указанием имени поля и направления сортировки
-        List<Product> products =
-            (List<Product>) productDao.findAll(
-                expression,
-                Sort.by(
-                    searchModel.sortingDirection,
-                    searchModel.orderBy
-                )
-            );
         return getResponseModelFromEntities(products);
     }
 
@@ -173,7 +183,12 @@ public class ProductService {
                         .description(p.getDescription())
                         .price(p.getPrice())
                         .quantity(p.getQuantity())
-                        .categoryId(p.getCategory().getId())
+                        .category(
+                            CategoryModel.builder()
+                                .id(p.getCategory().getId())
+                                .name(p.getCategory().getName())
+                                .build()
+                        )
                         .build()
                 )
                 .collect(Collectors.toList());

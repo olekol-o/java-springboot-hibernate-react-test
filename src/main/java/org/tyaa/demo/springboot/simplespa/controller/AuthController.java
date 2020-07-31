@@ -7,10 +7,13 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.tyaa.demo.springboot.simplespa.model.Cart;
 import org.tyaa.demo.springboot.simplespa.model.ResponseModel;
 import org.tyaa.demo.springboot.simplespa.model.RoleModel;
 import org.tyaa.demo.springboot.simplespa.model.UserModel;
 import org.tyaa.demo.springboot.simplespa.service.AuthService;
+
+import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -81,7 +84,11 @@ public class AuthController {
     }
 
     @GetMapping("/user/signedout")
-    public ResponseEntity<ResponseModel> signedOut() {
+    public ResponseEntity<ResponseModel> signedOut(HttpSession httpSession) {
+        Cart cart = (Cart) httpSession.getAttribute("CART");
+        if (cart != null) {
+            httpSession.removeAttribute("CART");
+        }
         return new ResponseEntity<>(authService.onSignOut(), HttpStatus.OK);
     }
 

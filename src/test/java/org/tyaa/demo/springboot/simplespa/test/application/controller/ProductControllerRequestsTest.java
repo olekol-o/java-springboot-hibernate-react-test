@@ -90,7 +90,7 @@ public class ProductControllerRequestsTest {
         // соотетствующие параметрам поискового запроса
         productModels.forEach(product -> {
             List<Long> categoryIds = Lists.newArrayList(1L, 2L);
-            Matcher<Iterable<? super Long>> matcher = hasItem(product.getCategoryId());
+            Matcher<Iterable<? super Long>> matcher = hasItem(product.getCategory().getId());
             assertThat(categoryIds, matcher);
         });
     }
