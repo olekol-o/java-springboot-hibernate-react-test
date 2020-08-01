@@ -87,6 +87,7 @@
 			<artifactId>aspectjweaver</artifactId>
 			<version>1.8.13</version>
 		</dependency>-->
+		<!-- Составление запросов в БД QueryDSL вместо Criteria -->
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-apt</artifactId>

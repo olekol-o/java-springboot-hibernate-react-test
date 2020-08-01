@@ -28,6 +28,8 @@ public class ProductPredicate {
         PathBuilder<Product> entityPath =
                 new PathBuilder<>(Product.class, "product");
         // ветвление в зависимости от типа полученного значения
+        // (для проверки, является ли по содержанию строка числом,
+        // в фале pom.xml подключна зависимость commons-lang3)
         if (StringUtils.isNumeric(criteria.getValue().toString())) {
             // если получено число (например, цена или количество товара) -
             // создаем основу предиката согласно заданного имени поля сущности Товар

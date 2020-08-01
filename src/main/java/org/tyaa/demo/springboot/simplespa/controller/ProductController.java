@@ -33,6 +33,9 @@ public class ProductController {
         return new ResponseEntity<>(service.update(product), HttpStatus.OK);
     }
 
+    // пользовательское правило для составления адресной строки:
+    // :: разделяет пары "ключ-значение";
+    // : разделяет ключи и значения
     @GetMapping("/categories/{categoryIds}/products::orderBy:{orderBy}::sortingDirection:{sortingDirection}")
     public ResponseEntity<ResponseModel> getByCategories(
             @PathVariable List<Long> categoryIds,

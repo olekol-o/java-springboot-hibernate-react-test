@@ -20,6 +20,13 @@ import java.util.List;
 public interface ProductHibernateDAO extends JpaRepository<Product, Long>,
         QuerydslPredicateExecutor<Product>, QuerydslBinderCustomizer<QProduct> {
 
+    // пользовательский метод получения списка товаров,
+    // идентификаторы категорий которых входят в множество,
+    // заданное параметром :ids,
+    // который получает список идентификаторов категорий из объекта списка
+    // @Param("ids") List<Long> categoryIds,
+    // передаваемого при вызове метода в качестве аргумента
+    // (явно задается JPQL-запрос, который должен выполнить модуль Spring Data)
     @Query( "SELECT p FROM Product p WHERE p.category.id IN :ids" )
     List<Product> findByCategoryIds(
         @Param("ids") List<Long> categoryIds,

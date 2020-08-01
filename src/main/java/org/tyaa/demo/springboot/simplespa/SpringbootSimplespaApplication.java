@@ -1,11 +1,13 @@
 package org.tyaa.demo.springboot.simplespa;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.tyaa.demo.springboot.simplespa.dao.CategoryHibernateDAO;
 import org.tyaa.demo.springboot.simplespa.dao.ProductHibernateDAO;
@@ -18,8 +20,18 @@ import org.tyaa.demo.springboot.simplespa.entity.User;
 
 import java.math.BigDecimal;
 
-@SpringBootApplication()
+@SpringBootApplication
+@PropertySource("classpath:application.properties")
 public class SpringbootSimplespaApplication {
+
+	@Value("${tests.unit.strings.image-base64-msft}")
+	private String msftImageString;
+
+	@Value("${tests.unit.strings.image-base64-orcl}")
+	private String orclImageString;
+
+	@Value("${tests.unit.strings.image-base64-eth}")
+	private String ethImageString;
 
 	@Autowired
 	public PasswordEncoder passwordEncoder;
@@ -81,6 +93,7 @@ public class SpringbootSimplespaApplication {
 					.price(new BigDecimal(203.92))
 					.quantity(1000)
 					.category(stockCategory)
+					.image(msftImageString)
 					.build();
 			Product stockORCLProduct =
 				Product.builder()
@@ -89,6 +102,7 @@ public class SpringbootSimplespaApplication {
 					.price(new BigDecimal(55.82))
 					.quantity(2000)
 					.category(stockCategory)
+					.image(orclImageString)
 					.build();
 			Product stockORCLProduct2 =
 				Product.builder()
@@ -97,6 +111,7 @@ public class SpringbootSimplespaApplication {
 					.price(new BigDecimal(56.12))
 					.quantity(1000)
 					.category(stockCategory)
+					.image(orclImageString)
 					.build();
 			Product cryptoEthereumProduct =
 				Product.builder()
@@ -105,6 +120,7 @@ public class SpringbootSimplespaApplication {
 					.price(new BigDecimal(232.48))
 					.quantity(500)
 					.category(cryptoCategory)
+					.image(ethImageString)
 					.build();
 			productDAO.save(stockMSFTProduct);
 			productDAO.save(stockORCLProduct);
