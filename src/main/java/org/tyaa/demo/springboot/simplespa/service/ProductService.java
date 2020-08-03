@@ -183,6 +183,7 @@ public class ProductService {
                         .description(p.getDescription())
                         .price(p.getPrice())
                         .quantity(p.getQuantity())
+                        .image(p.getImage())
                         .category(
                             CategoryModel.builder()
                                 .id(p.getCategory().getId())

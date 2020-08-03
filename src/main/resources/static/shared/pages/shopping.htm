@@ -120,10 +120,19 @@
                         }
                         $root.find('#article-grid-container').html('')
                         $.each(resp.data, function (index, value) {
+                            // если в контейнере для вывода сетки товаров
+                            // еще нет ни одного ряда
+                            // ИЛИ
+                            // если в последнем ряду в контейнере
+                            // количество карточек больше предельно допустимого
                             if ($root.find('#article-grid-container > .row:last-child').length === 0
                                 || $root.find('#article-grid-container > .row:last-child > .col').length > colLimit - 1) {
+                                // вставляем в конец списка рядов в контейнере
+                                // новый пустой ряд
                                 $root.find('#article-grid-container').append("<div class='row'></div>")
                             }
+                            // в любом случае в конец списка карточек в последнем ряду контейнера
+                            // добавляем очередную карточку
                             $root.find('#article-grid-container > .row:last-child')
                                 .append(template.render(value))
                         })
@@ -216,6 +225,9 @@
                 const categoryArray = []
                 //Перебираем все чекбоксы категорий и добавляем их в массив
                 $root.find("#categories input:checked").each(function () {
+                    // обрачивание ссылки на текущий выбранный чекбокс в jQuery-объект,
+                    // извлечение копии значения дата-атрибута data-category-id
+                    // и добавление его в конец массива идентификаторов категорий
                     categoryArray.push($(this).data('categoryId'))
                 })
                 // Если массив выбранных категорий не пуст -
