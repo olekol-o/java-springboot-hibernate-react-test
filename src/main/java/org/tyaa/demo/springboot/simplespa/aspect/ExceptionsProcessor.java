@@ -42,6 +42,8 @@ public class ExceptionsProcessor {
                     .message("This name is already taken")
                     .build();
         } catch (Exception ex) {
+            System.err.println("SQL Error!");
+            ex.printStackTrace();
             output =
                 ResponseModel.builder()
                     .status(ResponseModel.FAIL_STATUS)

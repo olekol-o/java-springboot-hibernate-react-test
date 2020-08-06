@@ -68,4 +68,12 @@ public class ProductController {
             HttpStatus.OK
         );
     }
+
+    @GetMapping("/products/price-bounds")
+    public ResponseEntity<ResponseModel> getProductsPriceBounds() {
+        return new ResponseEntity<>(
+                service.getProductsPriceBounds(),
+                HttpStatus.OK
+        );
+    }
 }
