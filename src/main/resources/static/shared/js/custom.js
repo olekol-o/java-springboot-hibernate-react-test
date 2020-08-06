@@ -61,14 +61,14 @@ $(document).ready(function () {
                                     {{#data}}
                                         <tr>
                                             <th scope="row">{{id}}</th>
-                                                <td>{{name}}</td>
-                                                <td>{{count}}</td>
+                                            <td>{{name}}</td>
+                                            <td>{{count}}</td>
                                             <td>
-                                            <div class="row">
-                                                <a class="col s3 offset-s1 waves-effect waves-light btn negBtn"><i class="material-icons">exposure_neg_1</i></a>
-                                                <a class="col s3 offset-s1 waves-effect waves-light btn plusBtn"><i class="material-icons">exposure_plus_1</i></a>
-                                                <a class="col s3 offset-s1 waves-effect waves-light btn remBtn"><i class="material-icons">clear</i></a>
-                                            </div>
+                                                <div class="row">
+                                                    <a class="col s3 offset-s1 waves-effect waves-light btn negBtn"><i class="material-icons">exposure_neg_1</i></a>
+                                                    <a class="col s3 offset-s1 waves-effect waves-light btn plusBtn"><i class="material-icons">exposure_plus_1</i></a>
+                                                    <a class="col s3 offset-s1 waves-effect waves-light btn remBtn"><i class="material-icons">clear</i></a>
+                                                </div>
                                             </td>
                                         </tr>
                                     {{/data}}

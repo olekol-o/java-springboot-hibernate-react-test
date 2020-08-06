@@ -85,6 +85,9 @@ public class AuthController {
 
     @GetMapping("/user/signedout")
     public ResponseEntity<ResponseModel> signedOut(HttpSession httpSession) {
+        // после выхода пользователя из аккаунта
+        // пытаемся получить объект его корзины покупок из объекта сеанса,
+        // и если получили - удаляем корзину из сеанса
         Cart cart = (Cart) httpSession.getAttribute("CART");
         if (cart != null) {
             httpSession.removeAttribute("CART");
