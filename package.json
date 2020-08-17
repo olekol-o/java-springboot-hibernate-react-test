@@ -12,7 +12,8 @@
     "react-transition-group": "^4.4.1"
   },
   "scripts": {
-    "watch": "webpack --watch -d"
+    "watch": "webpack --watch -d",
+    "start:dev": "webpack-dev-server"
   },
   "description": "Demo of Spring Boot with ReactJs",
   "main": "index.tsx",
@@ -33,7 +34,7 @@
     "tslint-immutable": "^6.0.1",
     "typescript": "^3.8.3",
     "webpack": "^4.43.0",
-    "webpack-dev-server": "^3.10.3",
+    "webpack-dev-server": "^3.11.0",
     "webpack-cli": "^3.3.11"
   },
   "repository": {
