@@ -1,12 +1,16 @@
 import React, { Component } from 'react'
 import {inject, observer} from "mobx-react";
+import { withRouter } from "react-router-dom"
 
-@inject("commonStore")
+@inject("commonStore", "userStore")
 @observer
+@withRouter
 class Home extends Component {
-    /* constructor (props) {
-        super(props)
-    } */
+    componentDidMount() {
+        if (this.props.match && this.props.match.params.out) {
+            this.props.userStore.logout()
+        }
+    }
     render () {
         console.log(this.props.commonStore)
         return (
