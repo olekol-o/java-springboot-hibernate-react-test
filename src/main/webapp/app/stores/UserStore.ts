@@ -69,7 +69,7 @@ class UserStore {
                     if (response) {
                         if (response.status === 'success') {
                             if (response.data) {
-                                this.user = new User(response.data.name)
+                                this.user = new User(response.data.name, response.data.roleName)
                             }
                         } else if (response.status === 'fail') {
                             // установка в переменную хранилища сообщения об ошибке

@@ -4,6 +4,9 @@ import Shopping from "../components/pages/Shopping"
 import SignIn from "../components/pages/SignIn"
 import SignUp from "../components/pages/SignUp"
 import userStore from './UserStore'
+import Dashboard from "../components/pages/admin/Dashboard"
+import DashboardCategories from "../components/pages/admin/DashboardCategories"
+import DashboardProducts from "../components/pages/admin/DashboardProducts"
 
 class RouterStore {
 
@@ -22,6 +25,15 @@ class RouterStore {
         { path: '/auth:out', name: 'Sign out', Component: Home }
     ]
 
+    private adminRoutes: Array<object> = [
+        { path: '/', name: 'Home', Component: Home },
+        { path: '/shopping', name: 'Shopping', Component: Shopping },
+        { path: '/admin', name: 'Dashboard', Component: Dashboard },
+        { path: '/admin/categories', name: 'DashboardCategories', Component: DashboardCategories },
+        { path: '/admin/products', name: 'DashboardProducts', Component: DashboardProducts },
+        { path: '/auth:out', name: `Sign out`, Component: Home }
+    ]
+
     // наблюдаемый текущий список роутов
     // (по умолчнию - для гостя)
     @observable routes: Array<object> = this.anonymousRoutes
@@ -34,6 +46,10 @@ class RouterStore {
     // установить в качестве текущего список роутов для аунтентифицированного пользователя
     @action setLoggedRoutes() {
         this.routes = this.loggedRoutes
+    }
+
+    @action setAdminRoutes() {
+        this.routes = this.adminRoutes
     }
 
     // реакция на изменение значения наблюдаемого свойства userStore.user:

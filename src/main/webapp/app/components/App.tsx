@@ -31,9 +31,18 @@ class App extends Component {
                 // если user установлен -
                 // выполняем переход на раздел "Главная"
                 history.replace("/")
-                // и меняем текущий список моделей роутов
-                // - на список моделей роутов для вошедшего пользователя
-                this.props.routerStore.setLoggedRoutes()
+
+                if (user.roleName === 'ROLE_ADMIN') {
+                    // ... и меняем текущий список моделей роутов
+                    // - на список моделей роутов для вошедшего пользователя-администратора,
+                    // если в модели пользователя, полученной с сервера указано имя роли
+                    // ROLE_ADMIN
+                    this.props.routerStore.setAdminRoutes()
+                } else {
+                    // ... и меняем текущий список моделей роутов
+                    // - на список моделей роутов для вошедшего пользователя
+                    this.props.routerStore.setLoggedRoutes()
+                }
             } else {
                 // если пользователь не установлен -
                 // выполняем переход на раздел "Вход"
@@ -65,17 +74,28 @@ class App extends Component {
                         preventScrolling: true
                     }}
                 >
-                    {routes.map(route => (
-                        <NavLink
-                            key={route.path}
-                            as={NavLink}
-                            to={route.path}
-                            activeClassName="active"
-                            exact
-                        >
-                            {route.name}
-                        </NavLink>
-                    ))}
+                    {routes.map(route => {
+                        /* выводим на панель навигации ссылки только на те разделы сайта,
+                        * в имени модели роута которых не встречается шаблон:
+                        * слово Dashboard + один или более символов латинского алфавита
+                        * в верхнем или нижнем регистре
+                        * (так пользователь администратор увилит ссылку на главную страницу админпанели,
+                        * но не увидит лишние ссылки на разделы админпанели)*/
+                        if(!/^Dashboard[A-z]+$/.test(route.name)) {
+                            return <NavLink
+                                key={route.path}
+                                as={NavLink}
+                                to={route.path}
+                                activeClassName="active"
+                                exact
+
+                            >
+                                {route.name}
+                            </NavLink>
+                        } else {
+                            return ''
+                        }
+                    })}
                 </Navbar>
                 <Container>
                     {routes.map(({ path, Component }) => (

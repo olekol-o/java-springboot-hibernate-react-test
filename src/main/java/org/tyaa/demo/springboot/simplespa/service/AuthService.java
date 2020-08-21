@@ -116,8 +116,14 @@ public class AuthService {
         ResponseModel response = new ResponseModel();
         if (authentication != null && authentication.isAuthenticated()) {
             UserModel userModel = UserModel.builder()
-                    .name(authentication.getName())
-                    .build();
+                .name(authentication.getName())
+                .roleName(
+                    authentication.getAuthorities().stream()
+                        .findFirst()
+                        .get()
+                        .getAuthority()
+                )
+                .build();
             response.setStatus(ResponseModel.SUCCESS_STATUS);
             response.setMessage(String.format("User %s Signed In", userModel.name));
             response.setData(userModel);
