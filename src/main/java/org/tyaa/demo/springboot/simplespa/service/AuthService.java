@@ -44,7 +44,7 @@ public class AuthService {
             User.builder()
                 .name(userModel.getName().trim())
                 .password(passwordEncoder.encode(userModel.getPassword().trim()))
-                .role(roleDao.findRoleByName("user"))
+                .role(roleDao.findRoleByName("ROLE_USER"))
                 .build();
         userDao.save(user);
         return ResponseModel.builder()
@@ -144,7 +144,7 @@ public class AuthService {
 
     public ResponseModel makeUserAdmin(Long id) throws Exception {
         // Получаем из БД объект роли администратора
-        Role role = roleDao.findRoleByName("admin");
+        Role role = roleDao.findRoleByName("ROLE_ADMIN");
         Optional<User> userOptional = userDao.findById(id);
         if (userOptional.isPresent()){
             User user = userOptional.get();
