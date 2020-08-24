@@ -18,7 +18,7 @@ class CategoryStore {
     @action fetchCategories() {
         commonStore.clearError()
         commonStore.setLoading(true)
-        fetch('api/categories',{
+        fetch('/simplespa/api/categories',{
             method: 'GET'
         }).then((response) => {
             return response.json()
@@ -37,6 +37,5 @@ class CategoryStore {
             commonStore.setLoading(false)
         }))
     }
-
-
 }
+export default new CategoryStore()
