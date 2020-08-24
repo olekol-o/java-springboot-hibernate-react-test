@@ -11,6 +11,10 @@ class DashboardCategories extends Component {
         this.props.categoryStore.fetchCategories()
     }
 
+    handleCategoryNameChange = e => {
+        this.props.categoryStore.setCategoryName(e.target.value)
+    }
+
     handleSubmitForm = e => {
         // предотвращаем отправку данных формы на сервер браузером
         // и перезагрузку страницы
@@ -21,6 +25,8 @@ class DashboardCategories extends Component {
     render () {
         const { loading } = this.props.commonStore
         const { categories } = this.props.categoryStore
+        // const { currentCategory } = this.props.categoryStore
+        // const categoryName = currentCategory.name
         return <Row>
             <h2>Categories</h2>
             <SideNav
@@ -48,6 +54,7 @@ class DashboardCategories extends Component {
                                     id="name"
                                     label={'category name'}
                                     validate
+                                    onChange={this.handleCategoryNameChange}
                                 />
                             </Col>
                         </Row>
@@ -63,10 +70,6 @@ class DashboardCategories extends Component {
                                     send
                                 </Icon>
                             </Button>
-                            <button className="btn waves-effect waves-light" type="submit" name="action">
-                                Submit
-                                <i className="material-icons right">send</i>
-                            </button>
                         </Row>
                     </form>
                 </Col>
