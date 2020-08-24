@@ -59,10 +59,19 @@ class RouterStore {
     userReaction = reaction(
         () => userStore.user,
         (user) => {
+            console.log('reaction - user: ' + user)
             if (user) {
-                const signOutRoute =
-                    this.loggedRoutes
-                        .find(route => route['name'].includes('Sign out'))
+                let signOutRoute
+                // TODO refactoring
+                if (user.roleName === 'ROLE_ADMIN') {
+                    signOutRoute =
+                        this.adminRoutes
+                            .find(route => route['name'].includes('Sign out'))
+                } else {
+                    signOutRoute =
+                        this.loggedRoutes
+                            .find(route => route['name'].includes('Sign out'))
+                }
                 // в модель роута "Выход" в свойство name
                 // записываем текст: Sign out + ИМЯ_ПОЛЬЗОВАТЕЛЯ,
                 // где ИМЯ_ПОЛЬЗОВАТЕЛЯ узнаем из наблюдаемого свойства userStore.user
