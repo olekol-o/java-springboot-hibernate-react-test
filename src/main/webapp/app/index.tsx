@@ -6,12 +6,14 @@ import commonStore from "./stores/CommonStore"
 import userStore from "./stores/UserStore"
 import routerStore from "./stores/RouterStore"
 import categoryStore from "./stores/CategoryStore"
+import productStore from "./stores/ProductStore"
 
 const stores = {
     commonStore,
     userStore,
     routerStore,
-    categoryStore
+    categoryStore,
+    productStore
 }
 
 ReactDOM.render(
