@@ -11,6 +11,7 @@ import {
 } from 'react-materialize'
 import {inject, observer} from 'mobx-react'
 import Resizer from 'react-image-file-resizer'
+import {reaction} from "mobx"
 
 @inject('commonStore', 'productStore', 'categoryStore')
 @observer
@@ -34,7 +35,7 @@ class DashboardProducts extends Component {
     }
 
     handleProductImageChange = e => {
-        const file = e.target.files[0];
+        const file = e.target.files[0]
         this.resizeFile(file).then(image => {
             console.log(image)
             this.props.productStore.setProductImage(image)
@@ -54,7 +55,7 @@ class DashboardProducts extends Component {
                 resolve(uri);
             },
             'base64'
-        );
+        )
     })
 
     render() {
@@ -153,10 +154,9 @@ class DashboardProducts extends Component {
                                     label="Image"
                                     type="file"
                                     onChange={this.handleProductImageChange}
-                                    key={'productImageInput'}
                                 />
                             </Col>
-                            <Col s={12} key={'productImagePreview'}>
+                            <Col s={12}>
                                 <img id="productImagePreview" className="responsive-img" src={this.props.productStore.currentProductImage}></img>
                             </Col>
                         </Row>

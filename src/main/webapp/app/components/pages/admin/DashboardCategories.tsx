@@ -2,37 +2,82 @@ import React, { Component } from 'react'
 import {Button, Card, CardTitle, Col, Icon, Row, SideNav, SideNavItem, Table, TextInput} from "react-materialize"
 import { NavLink } from 'react-router-dom'
 import {inject, observer} from "mobx-react"
+import Category from '../../../models/CategoryModel'
+import M from 'materialize-css'
+import {reaction} from "mobx";
 
 @inject("commonStore", "categoryStore")
 @observer
 class DashboardCategories extends Component {
 
+    constructor(props) {
+        super(props)
+        this.state = {formMode: 'add'}
+    }
+
     componentDidMount() {
+        /* document.getElementById('categoryFormSideNav')
+            .style
+            .transform = 'translateX(0%)' */
         this.props.categoryStore.fetchCategories()
     }
 
     handleCategoryNameChange = e => {
+        // e.preventDefault()
+        // e.stopPropagation()
         this.props.categoryStore.setCategoryName(e.target.value)
+    }
+
+    handleCategoryEdit = (e, categoryId) => {
+        this.state.formMode = 'edit'
+        console.log(document.getElementById('categoryFormSideNav'))
+        document.getElementById('categoryFormSideNav')
+            .style
+            .transform = 'translateX(105%)'
+        console.log(document.getElementById('categoryFormSideNav'))
+        const currentCategory =
+            this.props.categoryStore.categories.find(c => c.id === categoryId)
+        this.props.categoryStore.setCurrentCategory(currentCategory)
     }
 
     handleSubmitForm = e => {
         // предотвращаем отправку данных формы на сервер браузером
         // и перезагрузку страницы
         e.preventDefault()
-        this.props.categoryStore.add()
+        if (this.state.formMode === 'add') {
+            this.props.categoryStore.add()
+        } else {
+            this.state.formMode = 'add'
+            this.props.categoryStore.update()
+        }
     }
+
+    currentCategoryChanged = reaction(
+        () => this.props.categoryStore.currentCategory.name,
+        (currentCategoryName) => {
+            console.log(currentCategoryName)
+            M.updateTextFields()
+            console.log(document.getElementById('categoryFormSideNav'))
+            document.getElementById('categoryFormSideNav')
+                .style
+                .transform = 'translateX(105%)'
+            console.log(document.getElementById('categoryFormSideNav'))
+        }
+    )
 
     render () {
         const { loading } = this.props.commonStore
         const { categories } = this.props.categoryStore
-        // const { currentCategory } = this.props.categoryStore
-        // const categoryName = currentCategory.name
+        const { currentCategory } =
+            this.props.categoryStore.currentCategory
         return <Row>
             <h2>Categories</h2>
             <SideNav
                 id='categoryFormSideNav'
                 options={{
-                    draggable: true
+                    onCloseStart: (e) => {
+                        console.log(e)
+                    }
                 }}
                 trigger={
                     <Button
@@ -54,6 +99,7 @@ class DashboardCategories extends Component {
                                     id="name"
                                     label={'category name'}
                                     validate
+                                    value={this.props.categoryStore.currentCategory.name}
                                     onChange={this.handleCategoryNameChange}
                                 />
                             </Col>
@@ -92,7 +138,10 @@ class DashboardCategories extends Component {
                             <div data-category-id={category.id}>
                                 <Button
                                     node="button"
-                                    waves="light">
+                                    waves="light"
+                                    onClick={(e) => {
+                                        this.handleCategoryEdit(e, category.id)
+                                    }}>
                                     <Icon>edit</Icon>
                                 </Button>
                                 <Button
