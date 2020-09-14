@@ -86,7 +86,7 @@ class CategoryStore {
         commonStore.clearError()
         commonStore.setLoading(true)
         fetch(`/simplespa/api/category/${this.currentCategory.id}`,{
-            method: 'POST',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -110,4 +110,5 @@ class CategoryStore {
         }))
     }
 }
+export {CategoryStore}
 export default new CategoryStore()

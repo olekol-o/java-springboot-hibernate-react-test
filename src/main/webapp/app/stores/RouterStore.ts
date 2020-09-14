@@ -81,4 +81,5 @@ class RouterStore {
     )
 }
 
+export {RouterStore}
 export default new RouterStore()

@@ -1,18 +1,32 @@
 import React, { Component } from 'react'
-import {Button, Card, CardTitle, Col, Icon, Row, SideNav, SideNavItem, Table, TextInput} from "react-materialize"
 import { NavLink } from 'react-router-dom'
 import {inject, observer} from "mobx-react"
 import Category from '../../../models/CategoryModel'
-import M from 'materialize-css'
-import {reaction} from "mobx";
+import {reaction} from 'mobx'
+import {CategoryStore} from "app/stores/CategoryStore";
+import {CommonStore} from "app/stores/CommonStore";
+import {Button, Drawer, Icon, Table, TextField} from "@material-ui/core";
+
+interface IProps {
+    commonStore: CommonStore,
+    categoryStore: CategoryStore
+}
+
+interface IState {
+    formMode: string,
+    sidePanelVisibility: boolean
+}
 
 @inject("commonStore", "categoryStore")
 @observer
-class DashboardCategories extends Component {
+class DashboardCategories extends Component<IProps, IState> {
 
     constructor(props) {
         super(props)
-        this.state = {formMode: 'add'}
+        this.state = {
+            formMode: 'add',
+            sidePanelVisibility: false
+        }
     }
 
     componentDidMount() {
@@ -22,6 +36,19 @@ class DashboardCategories extends Component {
         this.props.categoryStore.fetchCategories()
     }
 
+    toggleDrawer = (open: boolean) => (
+        event: React.KeyboardEvent | React.MouseEvent,
+    ) => {
+        if (
+            event.type === 'keydown' &&
+            ((event as React.KeyboardEvent).key === 'Tab' ||
+                (event as React.KeyboardEvent).key === 'Shift')
+        ) {
+            return;
+        }
+        this.setState({sidePanelVisibility: open})
+    }
+
     handleCategoryNameChange = e => {
         // e.preventDefault()
         // e.stopPropagation()
@@ -29,12 +56,13 @@ class DashboardCategories extends Component {
     }
 
     handleCategoryEdit = (e, categoryId) => {
-        this.state.formMode = 'edit'
-        console.log(document.getElementById('categoryFormSideNav'))
+        this.setState({formMode: 'edit'})
+        this.setState({sidePanelVisibility: true})
+        /* console.log(document.getElementById('categoryFormSideNav'))
         document.getElementById('categoryFormSideNav')
             .style
             .transform = 'translateX(105%)'
-        console.log(document.getElementById('categoryFormSideNav'))
+        console.log(document.getElementById('categoryFormSideNav')) */
         const currentCategory =
             this.props.categoryStore.categories.find(c => c.id === categoryId)
         this.props.categoryStore.setCurrentCategory(currentCategory)
@@ -44,15 +72,16 @@ class DashboardCategories extends Component {
         // предотвращаем отправку данных формы на сервер браузером
         // и перезагрузку страницы
         e.preventDefault()
+        this.setState({sidePanelVisibility: false})
         if (this.state.formMode === 'add') {
             this.props.categoryStore.add()
         } else {
-            this.state.formMode = 'add'
+            this.setState({formMode: 'add'})
             this.props.categoryStore.update()
         }
     }
 
-    currentCategoryChanged = reaction(
+    /* currentCategoryChanged = reaction(
         () => this.props.categoryStore.currentCategory.name,
         (currentCategoryName) => {
             console.log(currentCategoryName)
@@ -63,16 +92,40 @@ class DashboardCategories extends Component {
                 .transform = 'translateX(105%)'
             console.log(document.getElementById('categoryFormSideNav'))
         }
-    )
+    ) */
 
     render () {
         const { loading } = this.props.commonStore
         const { categories } = this.props.categoryStore
-        const { currentCategory } =
-            this.props.categoryStore.currentCategory
-        return <Row>
+        /* const { currentCategory } =
+            this.props.categoryStore.currentCategory */
+        return <div>
             <h2>Categories</h2>
-            <SideNav
+            <Drawer
+                open={ this.state.sidePanelVisibility } onClose={this.toggleDrawer(false)}>
+                <form>
+                    <div>
+                        <TextField
+                            id="name"
+                            label={'category name'}
+                            value={this.props.categoryStore.currentCategory.name}
+                            onChange={this.handleCategoryNameChange}
+                        />
+                    </div>
+                    <div>
+                        <Button
+                            disabled={loading}
+                            onClick={this.handleSubmitForm}
+                        >
+                            Submit
+                            <Icon>
+                                send
+                            </Icon>
+                        </Button>
+                    </div>
+                </form>
+            </Drawer>
+            {/*<SideNav
                 id='categoryFormSideNav'
                 options={{
                     onCloseStart: (e) => {
@@ -119,7 +172,7 @@ class DashboardCategories extends Component {
                         </Row>
                     </form>
                 </Col>
-            </SideNav>
+            </SideNav>*/}
             <Table>
                 <thead>
                 <tr>
@@ -128,43 +181,30 @@ class DashboardCategories extends Component {
                 </tr>
                 </thead>
                 <tbody>
-            {categories.map(category => {
-                /* выводим на панель навигации список категорий*/
-                return (
-                    <tr>
-                        <td>{category.id}</td>
-                        <td>{category.name}</td>
-                        <td>
-                            <div data-category-id={category.id}>
-                                <Button
-                                    node="button"
-                                    waves="light"
-                                    onClick={(e) => {
-                                        this.handleCategoryEdit(e, category.id)
-                                    }}>
-                                    <Icon>edit</Icon>
-                                </Button>
-                                <Button
-                                    node="button"
-                                    waves="light">
-                                    <Icon>delete</Icon>
-                                </Button>
-                            </div>
-                        </td>
-                    </tr>
-                )
-                /*<Row>
-                    <Col>
-                        {category.id}
-                    </Col>
-                    <Col>
-                        {category.name}
-                    </Col>
-                </Row>*/
-            })}
+                    {categories.map(category => {
+                        return (
+                            <tr>
+                                <td>{category.id}</td>
+                                <td>{category.name}</td>
+                                <td>
+                                    <div data-category-id={category.id}>
+                                        <Button
+                                            onClick={(e) => {
+                                                this.handleCategoryEdit(e, category.id)
+                                            }}>
+                                            <Icon>edit</Icon>
+                                        </Button>
+                                        <Button>
+                                            <Icon>delete</Icon>
+                                        </Button>
+                                    </div>
+                                </td>
+                            </tr>
+                        )
+                    })}
                 </tbody>
             </Table>
-        </Row>
+        </div>
     }
 }
 

@@ -1,14 +1,4 @@
 import React, {Component} from 'react'
-import {
-    Button,
-    Col,
-    Icon,
-    Row,
-    Select,
-    SideNav,
-    Table,
-    TextInput
-} from 'react-materialize'
 import {inject, observer} from 'mobx-react'
 import Resizer from 'react-image-file-resizer'
 import {reaction} from "mobx"
@@ -62,9 +52,9 @@ class DashboardProducts extends Component {
         const {loading} = this.props.commonStore
         const {products} = this.props.productStore
         const {categories} = this.props.categoryStore
-        return <Row>
+        return <div>
             <h2>Products</h2>
-            <SideNav
+            {/*<SideNav
                 id='productFormSideNav'
                 options={{
                     draggable: true
@@ -135,7 +125,6 @@ class DashboardProducts extends Component {
                                         Category
                                     </option>
                                     {categories.map(category => {
-                                        /* выводим на панель навигации список категорий*/
                                         return (
                                             <option
                                                 value={category.id}
@@ -188,7 +177,6 @@ class DashboardProducts extends Component {
                 </thead>
                 <tbody>
                 {products.map(product => {
-                    /* выводим на панель навигации список категорий*/
                     return (
                         <tr>
                             <td>{product.id}</td>
@@ -215,8 +203,8 @@ class DashboardProducts extends Component {
 
                 })}
                 </tbody>
-            </Table>
-        </Row>
+            </Table>*/}
+        </div>
     }
 }
 

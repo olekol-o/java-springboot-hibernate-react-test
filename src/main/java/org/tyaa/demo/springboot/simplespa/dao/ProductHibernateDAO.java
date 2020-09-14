@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.tyaa.demo.springboot.simplespa.entity.Product;
 import org.tyaa.demo.springboot.simplespa.entity.QProduct;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -43,4 +44,9 @@ public interface ProductHibernateDAO extends JpaRepository<Product, Long>,
             .first((SingleValueBinding<StringPath, String>) StringExpression::containsIgnoreCase);
         bindings.excluding(root.image);
     }
+
+    @Query( "SELECT MIN(p.price) FROM Product p" )
+    BigDecimal findMinimum ();
+
+    Product findTop1ByOrderByPriceDesc ();
 }
