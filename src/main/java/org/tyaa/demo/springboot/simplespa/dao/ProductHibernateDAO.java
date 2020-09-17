@@ -11,6 +11,7 @@ import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.querydsl.binding.SingleValueBinding;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.tyaa.demo.springboot.simplespa.entity.Category;
 import org.tyaa.demo.springboot.simplespa.entity.Product;
 import org.tyaa.demo.springboot.simplespa.entity.QProduct;
 
@@ -49,4 +50,6 @@ public interface ProductHibernateDAO extends JpaRepository<Product, Long>,
     BigDecimal findMinimum ();
 
     Product findTop1ByOrderByPriceDesc ();
+
+    Integer countProductsByCategory(Category category);
 }

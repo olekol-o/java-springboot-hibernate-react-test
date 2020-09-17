@@ -1,7 +1,25 @@
 import React, { Component } from 'react'
 import { NavLink } from 'react-router-dom'
-import {Card, CardActions, CardContent, CardMedia, Grid, Icon, Typography, withStyles} from "@material-ui/core"
+import {
+    Card,
+    CardActions,
+    CardContent,
+    CardMedia,
+    Grid,
+    Icon,
+    Typography,
+    WithStyles,
+    withStyles
+} from "@material-ui/core"
 import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core/styles'
+import {CommonStore} from "app/stores/CommonStore";
+import {UserStore} from "app/stores/UserStore";
+
+interface IProps extends WithStyles<typeof styles> {
+}
+
+interface IState {
+}
 
 const styles = theme =>
     ({
@@ -20,7 +38,7 @@ const styles = theme =>
         },
     })
 
-class Dashboard extends Component {
+class Dashboard extends Component<IProps, IState> {
     render () {
         const { classes } = this.props
         return <Grid container spacing={3}>

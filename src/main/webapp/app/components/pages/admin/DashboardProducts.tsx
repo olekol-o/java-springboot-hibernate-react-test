@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import {inject, observer} from 'mobx-react'
 import Resizer from 'react-image-file-resizer'
 import {reaction} from "mobx"
+import Compress from "compress.js"
+import {Button, Icon, Table} from "@material-ui/core";
 
 @inject('commonStore', 'productStore', 'categoryStore')
 @observer
@@ -30,6 +32,19 @@ class DashboardProducts extends Component {
             console.log(image)
             this.props.productStore.setProductImage(image)
         })
+    }
+
+    handleProductEdit = (e, productId) => {
+        this.setState({formMode: 'edit'})
+        this.setState({sidePanelVisibility: true})
+        const currentProduct =
+            this.props.productStore.products.find(c => c.id === productId)
+        this.props.productStore.setCurrentProduct(currentProduct)
+    }
+
+    handleProductDelete = (e, productId) => {
+        this.props.productStore.setCurrentProductId(productId)
+        this.props.productStore.deleteProduct()
     }
 
     handleSubmitForm = e => {
@@ -164,7 +179,7 @@ class DashboardProducts extends Component {
                         </Row>
                     </form>
                 </Col>
-            </SideNav>
+            </SideNav>*/}
             <Table>
                 <thead>
                 <tr>
@@ -187,13 +202,15 @@ class DashboardProducts extends Component {
                             <td>
                                 <div data-product-id={product.id}>
                                     <Button
-                                        node='button'
-                                        waves='light'>
+                                        onClick={(e) => {
+                                            this.handleProductEdit(e, product.id)
+                                        }}>
                                         <Icon>edit</Icon>
                                     </Button>
                                     <Button
-                                        node='button'
-                                        waves='light'>
+                                        onClick={(e) => {
+                                            this.handleProductDelete(e, product.id)
+                                        }}>
                                         <Icon>delete</Icon>
                                     </Button>
                                 </div>
@@ -203,7 +220,7 @@ class DashboardProducts extends Component {
 
                 })}
                 </tbody>
-            </Table>*/}
+            </Table>
         </div>
     }
 }
