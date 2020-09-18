@@ -2,6 +2,7 @@ import {action, observable} from "mobx"
 import Category from '../models/CategoryModel'
 import commonStore from './CommonStore'
 import User from "app/models/UserModel";
+import Product from "app/models/ProductModel";
 
 class CategoryStore {
 
@@ -126,6 +127,7 @@ class CategoryStore {
                 if (responseModel.status === 'success') {
                     this.fetchCategories()
                     this.setCurrentCategoryId(null)
+                    this.setCurrentCategory(new Category())
                 } else if (responseModel.status === 'fail') {
                     commonStore.setError(responseModel.message)
                 }
