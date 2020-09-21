@@ -5,7 +5,7 @@ import {
     Card,
     CardActionArea, CardActions,
     CardContent,
-    CardMedia, Drawer, FormControl,
+    CardMedia, Checkbox, Drawer, FormControl, FormControlLabel, FormGroup,
     Grid,
     Icon, InputLabel, MenuItem, Select, TextField,
     Typography, withStyles,
@@ -60,7 +60,10 @@ class Shopping extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-        // this.props.categoryStore.fetchCategories()
+        // сразу после монтирования компонента в виртуальный DOM
+        // просим у локальных хранилищ загрузить
+        // списки моделей товаров и категорий
+        this.props.categoryStore.fetchCategories()
         this.props.productStore.fetchProducts()
     }
 
@@ -81,9 +84,17 @@ class Shopping extends Component<IProps, IState> {
         this.setState({sidePanelVisibility: true})
     }
 
+    // обработчик события "изменение состояния любого из чекбоксов фильтра категорий"
+    handleCategoriesFilter = (e, categoryId) => {
+        // в хранилище передаем идентификатор категории, значение чекбокса которой
+        // изменилось, и само значение (выбран или не выбран)
+        this.props.productStore.setFilerDataCategory(categoryId, e.target.checked)
+    }
+
     render () {
         const {loading} = this.props.commonStore
         const { products } = this.props.productStore
+        const { categories } = this.props.categoryStore
         const { classes } = this.props
         return <div>
             {/* drawer toggle button */}
@@ -107,13 +118,32 @@ class Shopping extends Component<IProps, IState> {
                         aria-controls="panel2a-content"
                         id="panel2a-header"
                     >
-                        <Typography className={classes.heading}>Accordion 2</Typography>
+                        <Typography className={classes.heading}>Categories</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Typography>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                            sit amet blandit leo lobortis eget.
-                        </Typography>
+                        <FormGroup row>
+                            {categories.map(category => {
+                                return (
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                name={'c' + category.id}
+                                                data-category-id={category.id}
+                                                checked={
+                                                    (() => {
+                                                        console.log(this.props.productStore.categories)
+                                                        console.log(category.id)
+                                                        console.log(this.props.productStore.categories.find(categoryId => categoryId === category.id))
+                                                        return !!this.props.productStore.categories.find(categoryId => categoryId === category.id)
+                                                    })()
+                                                }
+                                                onClick={(e) => {
+                                                    this.handleCategoriesFilter(e, category.id)
+                                                }}/>
+                                        }
+                                        label={category.name} />
+                                )})}
+                        </FormGroup>
                     </AccordionDetails>
                 </Accordion>
                 <Accordion>
@@ -137,7 +167,7 @@ class Shopping extends Component<IProps, IState> {
                         aria-controls="panel2a-content"
                         id="panel2a-header"
                     >
-                        <Typography className={classes.heading}>Accordion 2</Typography>
+                        <Typography className={classes.heading}>Accordion 3</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                         <Typography>
