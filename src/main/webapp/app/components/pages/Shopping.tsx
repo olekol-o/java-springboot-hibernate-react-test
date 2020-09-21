@@ -42,10 +42,17 @@ const styles = theme =>
             zIndex: 999,
             backgroundColor: '#ee6e73'
         },
+        drawer: {
+            width: 300
+        },
         heading: {
             fontSize: theme.typography.pxToRem(15),
-            fontWeight: theme.typography.fontWeightRegular,
+            fontWeight: theme.typography.fontWeightBold,
+            subHeading: {
+                fontWeight: theme.typography.fontWeightRegular,
+            },
         },
+
     })
 
 @inject('commonStore', 'productStore', 'categoryStore')
@@ -65,6 +72,9 @@ class Shopping extends Component<IProps, IState> {
         // списки моделей товаров и категорий
         this.props.categoryStore.fetchCategories()
         this.props.productStore.fetchProducts()
+        // TODO когда значения границ в локальном хранилище будут получены с сервера -
+        // скопировать их в свойства хранилища - priceFrom и priceTo
+        this.props.productStore.fetchProductPriceBounds()
     }
 
     toggleDrawer = (open: boolean) => (
@@ -91,6 +101,14 @@ class Shopping extends Component<IProps, IState> {
         this.props.productStore.setFilerDataCategory(categoryId, e.target.checked)
     }
 
+    handlePriceFromChange = e => {
+        this.props.productStore.setFilterDataPriceFrom(e.target.value)
+    }
+
+    handlePriceToChange = e => {
+        this.props.productStore.setFilterDataPriceTo(e.target.value)
+    }
+
     render () {
         const {loading} = this.props.commonStore
         const { products } = this.props.productStore
@@ -111,14 +129,20 @@ class Shopping extends Component<IProps, IState> {
             </Button>
             {/* drawer */}
             <Drawer
-                open={ this.state.sidePanelVisibility } onClose={this.toggleDrawer(false)}>
+                open={ this.state.sidePanelVisibility }
+                onClose={this.toggleDrawer(false)}
+                className={classes.drawer}
+            >
                 <Accordion>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel2a-content"
                         id="panel2a-header"
                     >
-                        <Typography className={classes.heading}>Categories</Typography>
+                        <Icon>list</Icon>
+                        <Typography className={classes.heading}>
+                            Categories
+                        </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                         <FormGroup row>
@@ -129,14 +153,7 @@ class Shopping extends Component<IProps, IState> {
                                             <Checkbox
                                                 name={'c' + category.id}
                                                 data-category-id={category.id}
-                                                checked={
-                                                    (() => {
-                                                        console.log(this.props.productStore.categories)
-                                                        console.log(category.id)
-                                                        console.log(this.props.productStore.categories.find(categoryId => categoryId === category.id))
-                                                        return !!this.props.productStore.categories.find(categoryId => categoryId === category.id)
-                                                    })()
-                                                }
+                                                checked={!!this.props.productStore.categories.find(categoryId => categoryId === category.id)}
                                                 onClick={(e) => {
                                                     this.handleCategoriesFilter(e, category.id)
                                                 }}/>
@@ -152,13 +169,33 @@ class Shopping extends Component<IProps, IState> {
                         aria-controls="panel2a-content"
                         id="panel2a-header"
                     >
-                        <Typography className={classes.heading}>Accordion 2</Typography>
+                        <Icon>filter</Icon>
+                        <Typography className={classes.heading}>
+                            Filter
+                        </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Typography>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                            sit amet blandit leo lobortis eget.
-                        </Typography>
+                        <FormGroup row>
+                            <div>
+                                <Typography className={classes.subHeading}>
+                                    Price Range
+                                </Typography>
+                            </div>
+                            <div>
+                                <TextField
+                                    id="priceFrom"
+                                    label={'from'}
+                                    value={this.props.productStore.priceFrom}
+                                    onChange={this.handlePriceFromChange}
+                                />
+                                <TextField
+                                    id="priceTo"
+                                    label={'to'}
+                                    value={this.props.productStore.priceTo}
+                                    onChange={this.handlePriceToChange}
+                                />
+                            </div>
+                        </FormGroup>
                     </AccordionDetails>
                 </Accordion>
                 <Accordion>

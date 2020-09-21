@@ -15,9 +15,12 @@ class ProductStore {
     // наблюдаемые свойства для фильтра товаров
     @observable orderBy: string = 'id'
     @observable sortingDirection: string = 'DESC'
-    @observable priceFrom: number = 10
-    @observable priceTo: number = 10000
+    @observable priceFrom: number = null
+    @observable priceTo: number = null
     @observable categories: Array<number> = []
+
+    @observable priceFromBound: number = 0
+    @observable priceToBound: number = 1000000
 
     @computed get isFilterDataPresent () {
         return (this.orderBy && this.sortingDirection) || (this.priceFrom && this.priceTo) || this.categories.length > 0
@@ -54,6 +57,20 @@ class ProductStore {
     @action setProductImage(image: string) {
         this.currentProductImage = image
         this.currentProduct.image = image
+    }
+
+    @action setFilterDataPriceFrom(priceFrom: number) {
+        this.priceFrom = priceFrom
+        if (this.priceFrom && this.priceTo) {
+            this.getFilteredProducts()
+        }
+    }
+
+    @action setFilterDataPriceTo(priceTo: number) {
+        this.priceTo = priceTo
+        if (this.priceFrom && this.priceTo) {
+            this.getFilteredProducts()
+        }
     }
 
     // установка содержимого списка идентификаторов категорий
@@ -223,7 +240,7 @@ class ProductStore {
                         /?search=
                             price>:${this.priceFrom};
                             price<:${this.priceTo}
-                            ${this.categories ? ';category:' + JSON.stringify(this.categories) : ''}`
+                            ${(this.categories && this.categories.length > 0) ? ';category:' + JSON.stringify(this.categories) : ''}`
 
         console.log(filteredProductsUrl)
         // перед запросом на сервер удаляем все пробельные символы из адреса,
@@ -242,6 +259,30 @@ class ProductStore {
                                     .replace(/(%2E)/ig, '%20')
                             )
                         )
+                } else if (responseModel.status === 'fail') {
+                    commonStore.setError(responseModel.message)
+                }
+            }
+        }).catch((error) => {
+            commonStore.setError(error.message)
+            throw error
+        }).finally(action(() => {
+            commonStore.setLoading(false)
+        }))
+    }
+
+    @action fetchProductPriceBounds () {
+        commonStore.clearError()
+        commonStore.setLoading(true)
+        fetch('/simplespa/api/products/price-bounds', {
+            method: 'GET'
+        }).then((response) => {
+            return response.json()
+        }).then(responseModel => {
+            if (responseModel) {
+                if (responseModel.status === 'success') {
+                    this.priceFromBound = responseModel.data.min
+                    this.priceToBound = responseModel.data.max
                 } else if (responseModel.status === 'fail') {
                     commonStore.setError(responseModel.message)
                 }
