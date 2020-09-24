@@ -29,3 +29,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### NodeJs ###
+node_modules/
+package-lock.json
+src/main/resources/static/built/
+
+### webpack html plugin ###
+index.html
